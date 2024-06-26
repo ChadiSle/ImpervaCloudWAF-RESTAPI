@@ -1,6 +1,8 @@
 import requests
 import re
 import pandas
+
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I believe the "Unsafe Legacy Renegotiation Disabled" error is due to a CVE imperva may not be privy too regarding their latest SSL certificates on their API servers. Python has recently removed those unsecure certs from their ssl library. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
 from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
@@ -29,15 +31,7 @@ def ssl_supressed_session():
 
 
 # Set your API credentials
-Wex_Health_headers = {
-    "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "x-api-id": "",
-    "x-api-key": ""
-    
-}
-Wex_Inc_headers = {
+Imperva_Headers_Account1 = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
@@ -46,13 +40,24 @@ Wex_Inc_headers = {
     
 }
 
+Imperva_Headers_Account2 = {
+    "Content-Type": "application/json",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "x-api-id": "",
+    "x-api-key": ""
+    
+}
 
-headers = input("Which Imperva Tenant are you searching? Wex Health/Wex Inc? :""\n")
+# Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
 
-if headers == "Wex Health" or headers == "wex health" or headers == "Wex health" or headers == "wex Health" or headers == "Wex Helth":
-    headers = Wex_Health_headers
+headers = input("Which Imperva Tenant are you searching? :""\n")
 
-elif headers == "Wex Inc" or headers == "wex inc" or headers == "Wex inc" or headers == "Wex Corp":
+# Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
+if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
+    headers = Imperva_Headers_Account1
+
+elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
     headers = Wex_Inc_headers
 
 
@@ -61,6 +66,7 @@ domains = []
 kill_input = ""
 print("Please provide the domains you wish to Onboard :" "\n")
 
+# This while loop allows for the copy pasting of inputs from sheets such as an excel file where each input is on a new line, to continue you must press enter twice after pasting or typing an input, the blank line kills the input so the script can continue
 while True:
     line = input()
     if line == kill_input:
@@ -69,21 +75,20 @@ while True:
 
 print(domains)
 
-account_id = input("Which account will you be onboarding to? Wex Health/Partner Vanities/Wex Inc? :""\n")
+account_id = input("Which account will you be onboarding to? Account1/Account2/Account3? :""\n")
 
-#8/30/23 changed to Wex Inc account ID
-#Wex Health: 1745073
-if account_id == "Wex Health" or account_id == "wex health" or account_id == "Wex health" or account_id == "wex Health" or account_id == "Wex Helth":
-    account_id = 1745073
-    headers = Wex_Health_headers
+#Add Parent and Subaccount IDs here to easily differentiate and pivot where you want to onboard your sites, add some room for error when specifying as above with the header names
+if account_id == "Account1" or account_id == "account1":
+    account_id = ""
+    headers = Imperva_Headers_Account1
 
-elif account_id == "Partner Vanities" or account_id == "partner vanities" or account_id == "Partner vanities" or account_id == "partner Vanities" or account_id == "Partner Vanity" or account_id == "partner vanity" or account_id == "Partner vanity" or account_id == "partner Vanity" or account_id == "Partner Vanties":
-    account_id = 2014828
-    headers = Wex_Health_headers
+elif account_id == "Account1_Subaccount1" or account_id == "account1_subaccount1":
+    account_id = ""
+    headers = Imperva_Headers_Account1
 
-elif account_id == "Wex Inc":
-    account_id = 884886
-    headers = Wex_Inc_headers
+elif account_id == "Account2":
+    account_id = ""
+    headers = Imperva_Headers_Account2
 
 #if using Advanced Config ie specifying the DNS
 advanced_config = input("Will you be defining the origin IP/CNAME Yes/No :""\n")
@@ -98,6 +103,7 @@ if advanced_config == "Yes" or advanced_config == "yes":
 
         api_url = (f"https://my.imperva.com/api/prov/v1/sites/add?domain={domain}&account_id={account_id}&send_site_setup_emails=True&site_ip={cname_or_IP}&force_ssl=True&log_level=full")
 
+        #Currently the Custom HTTP Adapter is being usede to make this call, to use the requests library instead simply change ssl_suppressed_session().post > requests.post
         response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
 
         response_content = response.content
