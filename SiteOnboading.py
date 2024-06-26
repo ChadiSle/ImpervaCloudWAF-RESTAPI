@@ -12,8 +12,8 @@ headers = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
-    "x-api-id": "61022",
-    "x-api-key": "d7c19b6e-24f1-4982-b70d-cd048095618b"
+    "x-api-id": "",
+    "x-api-key": ""
     
 }
 site_info = []
