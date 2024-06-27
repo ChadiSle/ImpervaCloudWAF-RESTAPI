@@ -51,14 +51,14 @@ Imperva_Headers_Account2 = {
 
 # Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
 
-headers = input("Which Imperva Tenant are you searching? :""\n")
+headers = input("Which Imperva Tenant are you working with? :""\n")
 
 # Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
 if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
     headers = Imperva_Headers_Account1
 
 elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
-    headers = Wex_Inc_headers
+    headers = Imperva_Headers_Account2
 
 
 site_info = []
@@ -75,7 +75,7 @@ while True:
 
 print(domains)
 
-account_id = input("Which account will you be onboarding to? Account1/Account2/Account3? :""\n")
+account_id = input("Which account will you be onboarding to? Account1/Account2/Subaccount1ofAccount1? :""\n")
 
 #Add Parent and Subaccount IDs here to easily differentiate and pivot where you want to onboard your sites, add some room for error when specifying as above with the header names
 if account_id == "Account1" or account_id == "account1":
