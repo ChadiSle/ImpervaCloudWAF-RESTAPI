@@ -1,5 +1,7 @@
 import requests
 
+#This script can be adjusted for any number of policies and will work for applying/removing said policy from any number of sites at once
+
 #The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I believe the "Unsafe Legacy Renegotiation Disabled" error is due to a CVE imperva may not be privy too regarding their latest SSL certificates on their API servers. Python has recently removed those unsecure certs from their ssl library. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
 from requests import Session
 from requests import adapters
@@ -28,15 +30,7 @@ def ssl_supressed_session():
     return session
 
 # Set your API credentials
-Wex_Health_headers = {
-    "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "x-api-id": "",
-    "x-api-key": ""
-    
-}
-Wex_Inc_headers = {
+Imperva_Headers_Account1 = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
@@ -45,14 +39,25 @@ Wex_Inc_headers = {
     
 }
 
-headers = input("Which Imperva Tenant are you searching? Wex Health/Wex Inc? :""\n")
+Imperva_Headers_Account2 = {
+    "Content-Type": "application/json",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "x-api-id": "",
+    "x-api-key": ""
+    
+}
 
-if headers == "Wex Health" or headers == "wex health" or headers == "Wex health" or headers == "wex Health" or headers == "Wex Helth":
-    headers = Wex_Health_headers
+# Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
 
-elif headers == "Wex Inc" or headers == "wex inc" or headers == "Wex inc" or headers == "Wex Corp":
-    headers = Wex_Inc_headers
+headers = input("Which Imperva Tenant are you working with? :""\n")
 
+# Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
+if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
+    headers = Imperva_Headers_Account1
+
+elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
+    headers = Imperva_Headers_Account2
 
 site_ids = []
 kill_input = ""
@@ -66,25 +71,26 @@ while True:
 
 site_ids = [int(num) for num in site_ids]
 
-print(site_ids)
+# Adjust the variable names to coincide with the ACL/Allowlist names in the tenant. Adjust the values for each to reflect the corresponding Policy ID
+ACL_ID_1 =
+ACL_ID_2 =
+ACL_ID_3 =
 
-Wex_Prod_ACL_ID = 526290
-Wex_Internal_ACL_ID = 493695
-MG4_Temp_Block_All_ACL_ID = 1247968
-
-#If applying ACL to a site in the subaccount, you will need to specify the account ID in the api_url by appending "?caid={Partner_Vanities_AccountID}"
-Partner_Vanities_AccountID = input("Is this the Partner Vanities subaccount? Yes/No""\n")
-if Partner_Vanities_AccountID == "Yes":
-    Wex_Internal_ACL_ID = "493695?caid=2014828"
-    Wex_Prod_ACL_ID = "526290?caid=2014828"
+#If applying ACL to a site in a subaccount, you will need to specify the account ID in the api_url by appending "?caid={SubAccountID}"
+SubAccountID = input("Is this site in a subaccount? Yes/No:""\n")
+if SubAccountID == "Yes" or SubAccountID == "yes":
+    SubAccountID = input("What is the SubaccountID?:""\n")
+    ACL_ID_1 = f"{ACL_ID_1}?caid={SubAccountID}"
+    ACL_ID_2 = f"{ACL_ID_2}?caid={SubAccountID}"
+    #Add additional variables for additional ACLs
 
 Action_Input = input("Would you like to Add/Remove a Policy?""\n")
-Policy_Input = input("Is it the Internal/Prod/Temp ACL?""\n")
+Policy_Input = input("Is it ACL1/ACL2/ACL3?""\n")
 
-if Action_Input == "Add" and Policy_Input == "Temp":
+if Action_Input == "Add" and Policy_Input == "ACL1":
     for site_id in site_ids:
 
-        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{MG4_Temp_Block_All_ACL_ID}")
+        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_1}")
 
         response = ssl_supressed_session().post(api_url, headers=headers)
 
@@ -97,10 +103,10 @@ if Action_Input == "Add" and Policy_Input == "Temp":
             print(response.content)
 
 
-if Action_Input == "Add" and Policy_Input == "Internal":
+if Action_Input == "Add" and Policy_Input == "ACL2":
     for site_id in site_ids:
 
-        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{Wex_Internal_ACL_ID}")
+        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_2}")
 
         response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
 
@@ -112,11 +118,11 @@ if Action_Input == "Add" and Policy_Input == "Internal":
         else: 
             print(response.content)
 
-if Action_Input == "Remove" and Policy_Input == "Temp":
+if Action_Input == "Remove" and Policy_Input == "ACL1":
     
     for site_id in site_ids:
 
-        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{MG4_Temp_Block_All_ACL_ID}")
+        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_1}")
 
         response = ssl_supressed_session().delete(api_url, headers=headers, verify=False)
 
@@ -129,11 +135,11 @@ if Action_Input == "Remove" and Policy_Input == "Temp":
             print(response.content)
 
 
-if Action_Input == "Remove" and Policy_Input == "Internal":
+if Action_Input == "Remove" and Policy_Input == "ACL2":
     
     for site_id in site_ids:
 
-        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{Wex_Internal_ACL_ID}")
+        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_2}")
 
         response = ssl_supressed_session().delete(api_url, headers=headers, verify=False)
 
@@ -145,10 +151,10 @@ if Action_Input == "Remove" and Policy_Input == "Internal":
         else: 
             print(response.content)
 
-if Action_Input == "Add" and Policy_Input == "Prod":
+if Action_Input == "Add" and Policy_Input == "ACL3":
     for site_id in site_ids:
 
-        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{Wex_Prod_ACL_ID}")
+        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_3}")
 
         response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
 
@@ -160,11 +166,11 @@ if Action_Input == "Add" and Policy_Input == "Prod":
         else: 
             print(response.content)
 
-if Action_Input == "Remove" and Policy_Input == "Prod":
+if Action_Input == "Remove" and Policy_Input == "ACL3":
     
     for site_id in site_ids:
 
-        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{Wex_Prod_ACL_ID}")
+        api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_3}")
 
         response = ssl_supressed_session().delete(api_url, headers=headers, verify=False)
 
