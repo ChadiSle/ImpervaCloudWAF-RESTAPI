@@ -1,17 +1,36 @@
 import requests
 import re
 import pandas
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I believe the "Unsafe Legacy Renegotiation Disabled" error is due to a CVE imperva may not be privy too regarding their latest SSL certificates on their API servers. Python has recently removed those unsecure certs from their ssl library. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
+from requests import Session
+from requests import adapters
+from urllib3 import poolmanager
+from ssl import create_default_context, Purpose, CERT_NONE
+
+class CustomHttpAdapter (adapters.HTTPAdapter):
+    def __init__(self, ssl_context=None, **kwargs):
+        self.ssl_context = ssl_context
+        super().__init__(**kwargs)
+
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = poolmanager.PoolManager(
+            num_pools=connections, maxsize=maxsize,
+            block=block, ssl_context=self.ssl_context)
+
+def ssl_supressed_session():
+    ctx = create_default_context(Purpose.SERVER_AUTH)
+    # to bypass verification after accepting Legacy connections
+    ctx.check_hostname = False
+    ctx.verify_mode = CERT_NONE
+    # accepting legacy connections
+    ctx.options |= 0x4    
+    session = Session()
+    session.mount('https://', CustomHttpAdapter(ctx))
+    return session
+
 
 # Set your API credentials
-Wex_Health_headers = {
-    "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "x-api-id": "",
-    "x-api-key": ""
-    
-}
-Wex_Inc_headers = {
+Imperva_Headers_Account1 = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
@@ -20,14 +39,25 @@ Wex_Inc_headers = {
     
 }
 
-headers = input("Which Imperva Tenant are you working on? Wex Health/Wex Inc? :""\n")
+Imperva_Headers_Account2 = {
+    "Content-Type": "application/json",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "x-api-id": "",
+    "x-api-key": ""
+    
+}
 
-if headers == "Wex Health" or headers == "wex health" or headers == "Wex health" or headers == "wex Health" or headers == "Wex Helth":
-    headers = Wex_Health_headers
+# Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
 
-elif headers == "Wex Inc" or headers == "wex inc" or headers == "Wex inc" or headers == "Wex Corp":
-    headers = Wex_Inc_headers
+headers = input("Which Imperva Tenant are you working with? :""\n")
 
+# Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
+if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
+    headers = Imperva_Headers_Account1
+
+elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
+    headers = Imperva_Headers_Account2
 
 DDoS_Report = []
 
@@ -51,7 +81,7 @@ for site_id in site_ids:
 
     response_content = response.content
 
-    # Regex pattern to match rule_id
+    # Regex patterns to grab report info
     DDoS_Threshold_Pattern= (r'"ddos_traffic_threshold":(\d+)')
     SiteID_Pattern = (r'"site_id":(\d+)')
     Activation_Mode_Pattern = (r'"activation_mode_text"\s*:\s*"([^"]*)"')
@@ -76,10 +106,10 @@ for site_id in site_ids:
     print(response.status_code)
 
 data_frame = pandas.DataFrame(DDoS_Report)
-excel_file_name = 'DDoS_Report.xlsx'
+excel_file_name = 'DDoS_Threshold_Report.xlsx'
 data_frame.to_excel(excel_file_name, index=False)
 
-print("Please check the DDoS_Report.xlsx file for requested information")
+print("Please check the DDoS_Threshold_Report.xlsx file for requested information")
 
 
 
