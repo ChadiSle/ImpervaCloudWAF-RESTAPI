@@ -1,7 +1,7 @@
 import requests
 import re
 import pandas
-
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I believe the "Unsafe Legacy Renegotiation Disabled" error is due to a CVE imperva may not be privy too regarding their latest SSL certificates on their API servers. Python has recently removed those unsecure certs from their ssl library. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
 from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
@@ -29,15 +29,7 @@ def ssl_supressed_session():
     return session
 
 # Set your API credentials
-Wex_Health_headers = {
-    "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "x-api-id": "",
-    "x-api-key": ""
-    
-}
-Wex_Inc_headers = {
+Imperva_Headers_Account1 = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
@@ -46,13 +38,25 @@ Wex_Inc_headers = {
     
 }
 
-headers = input("Which Imperva Tenant are you searching? Wex Health/Wex Inc? :""\n")
+Imperva_Headers_Account2 = {
+    "Content-Type": "application/json",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "x-api-id": "",
+    "x-api-key": ""
+    
+}
 
-if headers == "Wex Health" or headers == "wex health" or headers == "Wex health" or headers == "wex Health" or headers == "Wex Helth":
-    headers = Wex_Health_headers
+# Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
 
-elif headers == "Wex Inc" or headers == "wex inc" or headers == "Wex inc" or headers == "Wex Corp":
-    headers = Wex_Inc_headers
+headers = input("Which Imperva Tenant are you working with? :""\n")
+
+# Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
+if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
+    headers = Imperva_Headers_Account1
+
+elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
+    headers = Imperva_Headers_Account2
 
 
 site_ids = []
@@ -70,7 +74,6 @@ for site_id in site_ids:
     
     api_url = (f"https://my.imperva.com/api/prov/v3/sites/{site_id}/data-centers-configuration")
     
-    #return to normal requests.get method if using normal requests library with python 3.11 or earlier
     response = ssl_supressed_session().get(api_url, headers=headers)
 
     print(response.status_code)
@@ -105,10 +108,10 @@ for site_id in site_ids:
 
             
 data_frame = pandas.DataFrame(OriginInfo)
-excel_file_name = 'ImpervaSiteToOriginInfo.xlsx'
+excel_file_name = 'Imperva_Site_To_Origin_Info.xlsx'
 data_frame.to_excel(excel_file_name, index=False)
 
-print("Please check the ImpervaSiteToOriginInfo.xlsx file for the Imperva Origin and Site ID")
+print("Please check the Imperva_Site_To_Origin_Info.xlsx file for the Imperva Origin and Site ID")
 
 
 
