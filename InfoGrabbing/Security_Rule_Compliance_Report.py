@@ -75,7 +75,7 @@ for site_id in site_ids:
     
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}&tests=domain_validation")
 
-    response = requests.post(api_url, headers=headers, verify=False)
+    response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
 
     print(response.status_code)
     response_content = response.content
@@ -104,7 +104,7 @@ for site_id in site_ids:
 
             
 data_frame = pandas.DataFrame(incap_rule_id_info)
-excel_file_name = 'DDoS_Proactive_Threshold_Alert_Audit.xlsx'
+excel_file_name = 'Security_Rule_Compliance_Report.xlsx'
 data_frame.to_excel(excel_file_name, index=False)
 
 print("Please check the DDoS_Proactive_Threshold_Alert_Audit.xlsx file for the Site ID and Compliance Status")
