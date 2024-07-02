@@ -1,6 +1,8 @@
 import requests
 import re
 import pandas
+
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I believe the "Unsafe Legacy Renegotiation Disabled" error is due to a CVE imperva may not be privy too regarding their latest SSL certificates on their API servers. Python has recently removed those unsecure certs from their ssl library. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
 from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
@@ -28,15 +30,7 @@ def ssl_supressed_session():
     return session
 
 # Set your API credentials
-Wex_Health_headers = {
-    "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "x-api-id": "",
-    "x-api-key": ""
-    
-}
-Wex_Inc_headers = {
+Imperva_Headers_Account1 = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
@@ -45,18 +39,29 @@ Wex_Inc_headers = {
     
 }
 
-headers = input("Which Imperva Tenant are you searching? Wex Health/Wex Inc? :""\n")
+Imperva_Headers_Account2 = {
+    "Content-Type": "application/json",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "x-api-id": "",
+    "x-api-key": ""
+    
+}
 
-if headers == "Wex Health" or headers == "wex health" or headers == "Wex health" or headers == "wex Health" or headers == "Wex Helth":
-    headers = Wex_Health_headers
+# Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
 
-elif headers == "Wex Inc" or headers == "wex inc" or headers == "Wex inc" or headers == "Wex Corp":
-    headers = Wex_Inc_headers
+headers = input("Which Imperva Tenant are you working with? :""\n")
 
+# Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
+if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
+    headers = Imperva_Headers_Account1
+
+elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
+    headers = Imperva_Headers_Account2
 
 site_ids = []
 kill_input = ""
-print("Please provide the site ids you wish to add these rules too :" "\n")
+print("Please provide the site ID(s) you wish to Add/Remove a policy too." "\n")
 
 while True:
     line = input()
@@ -67,16 +72,15 @@ while True:
 
 #Everything in the param "filter=" correlates to the actual syntax of the rule being created the "name=" param is the name of the rule 
 # name="Block%20TOR%20and%20Anon" correlates to the rule name "Block TOR and Anon" : filter="MaliciousIPList%20%3D%3D%20AnonymousProxyIPs%20%7C%20MaliciousIPList%20%3D%3D%20TorIPs" correlates to "MaliciousIPList == AnonymousProxyIPs | MaliciousIPList == TorIPs"
-# name="IP%20Reputation"IPReputationRiskLevel%20%3D%3D%20High%20%26%20ClientIP%20%21%3D%20209.134.130.138%3B209.134.157.10%3B65.122.49.226%3B65.214.41.35" correlates to "IPReputationRiskLevel == High & ClientIP != 209.134.130.138;209.134.157.10;65.122.49.226;65.214.41.35"
 
 # Names of Common Rules we use and their params
-
-
-Block_MG4_Card = "Block%20MG4%20Card"
-Block_MG4_Card_Param = "ClientIP%20%3D%3D%200.0.0.0%2F0"
+Block_All = "Block%20All"
+Block_All_Param = "ClientIP%20%3D%3D%200.0.0.0%2F0"
 
 IP_Reputation = "IP%20Reputation"
-IP_Reputation_Param = "IPReputationRiskLevel%20%3D%3D%20High%20%26%20ClientIP%20%21%3D%20209.134.130.138%3B209.134.157.10%3B65.122.49.226%3B65.214.41.35"
+IP_Reputation_Param = "IPReputationRiskLevel%20%3D%3D%20High #%20%26%20ClientIP%20%21%3D%20 "Add this piece along with IPs that you would like to exclude from this rule, I have found it is rather ineffective and would not recommend using this as a standard"
+
+# I have used these as standard rules across thousands of sites with great success and would recommend them as Best Practice, for the DDoS_RPS_Alert I recommend using whatever 75% of your DDoS mitigation threshold as the trigger for the alert, the script will prompt you for this information when running it. This in combination with a Splunk Lookup that utilizes site_id and rule_id tuples, allows for preventative monitoring of possible false positives before they happen so action can be taken to prevent blocking legitimate traffic.
 
 Block_Tor_and_Anon = "Block%20TOR%20and%20Anon"
 Block_Tor_and_Anon_Param = "MaliciousIPList%20%3D%3D%20AnonymousProxyIPs%20%7C%20MaliciousIPList%20%3D%3D%20TorIPs"
@@ -96,12 +100,12 @@ if rule_action == "block":
 if rule_action == "alert":
     rule_action = rule_action_alert
 
-incap_rule = input("Do you want to apply IP Rep/Block Tor/Block IP/RPS Alert? :""\n")
+incap_rule = input("Do you want to apply IP Rep/Block Tor/Block IP/RPS Alert/Block All? :""\n")
 
 if incap_rule == "Block IP":
     Block_IP = input("Please provide the IP you wish to block :""\n")
     incap_rule = f"ClientIP%20%3D%3D%20{Block_IP}"
-    rule_name = f"Block%20{Block_IP}%20Change%20Ticket%20178343"
+    rule_name = f"Block%20{Block_IP}"
 
 if incap_rule == "IP Rep":
     incap_rule = IP_Reputation_Param
