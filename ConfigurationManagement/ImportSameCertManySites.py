@@ -58,17 +58,17 @@ if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1
 elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
     headers = Imperva_Headers_Account2
 
-# Set the certificate details
+# Set the certificate details (copy paste here, the script will do the encoding)
 certificate= ""
 certificate = base64.b64encode(certificate.encode('utf-8'))
 print(certificate)
 
-# Set the private key details
+# Set the private key details (copy paste here, the script will do the encoding)
 private_key = ""
 private_key = base64.b64encode(private_key.encode('utf-8'))
 print(private_key)
 
-#pass_phrase = input("Please provide the passphrase for the certificate (if there isnt one, leave blank and press enter) :""\n")    
+#pass_phrase = input("Please provide the passphrase for the certificate (if there isnt one, leave blank and press enter) :""\n")  "Enable this line if using pfx"
 
 # Set the site ids
 site_ids = []
@@ -86,7 +86,7 @@ while True:
 data = {
   "certificate": certificate.decode('utf-8'),
   "private_key": private_key.decode('utf-8'),
-  "auth_type": "RSA"
+  "auth_type": "RSA" #Change to "ECC" depending on cert type, also if using pfx another line with "pass_phrase": f'{pass_phrase}
 }
 
 for site_id in site_ids:
