@@ -7,8 +7,8 @@ headers = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
-    "x-api-id": "62792",
-    "x-api-key": "61565155-f3cd-4c81-84aa-7d772aa7a31d"
+    "x-api-id": "",
+    "x-api-key": ""
     
 }
 
