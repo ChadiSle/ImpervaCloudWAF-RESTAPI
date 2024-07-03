@@ -90,6 +90,6 @@ for site_id in site_ids:
 
     api_endpoint = f"{api_url}/{site_id}/{hsmCertificate}"
     
-    response = requests.put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
+    response = ssl_supressed_session().put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
 
     print(f"Site ID {site_id} response status code: {response.status_code}")
