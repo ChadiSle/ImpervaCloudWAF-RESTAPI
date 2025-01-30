@@ -77,7 +77,10 @@ for site_id in site_ids:
 
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/configure/security?site_id={site_id}&rule_id=api.threats.ddos&activation_mode=api.threats.ddos.activation_mode.auto&ddos_traffic_threshold={DDoS_Threshold}")
 
-    response = ssl_supressed_session().post(api_url, headers=headers)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
 
     print(response.status_code)
     print('DDoS Threshold has been set')
