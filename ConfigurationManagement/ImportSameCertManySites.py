@@ -96,9 +96,12 @@ for site_id in site_ids:
     api_url = (f"https://my.imperva.com/api/prov/v2/sites/{site_id}/customCertificate")
 
     # Make the API request
-    response = ssl_supressed_session().put(api_url, data=json.dumps(data), headers=headers)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().put(api_url, headers=headers, data=json.dumps(data), verify=False)
+    
+    response = requests.put(api_url, headers=headers, data=json.dumps(data), verify=False)
 
-# Check the response status code
+    # Check the response status code
     if response.status_code == 200:
         print(response.status_code, response.content)
     else:
