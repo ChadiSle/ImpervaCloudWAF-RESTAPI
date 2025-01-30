@@ -76,7 +76,10 @@ for rule_id in rule_ids:
 
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/incapRules/delete?rule_id={rule_id}")
 
-    response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
 
     print(f"Rule ID {rule_id} DELETED, response status code {response.status_code}")
     print(response.content)
