@@ -73,6 +73,9 @@ for site_id in site_ids:
 
     api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies")
 
-    response = ssl_supressed_session().get(api_url, headers=headers)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().get(api_url, headers=headers, verify=False)
+    
+    response = requests.get(api_url, headers=headers, verify=False)
 
     print(response.content)
