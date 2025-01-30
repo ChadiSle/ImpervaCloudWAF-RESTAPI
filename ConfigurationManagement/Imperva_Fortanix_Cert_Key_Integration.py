@@ -95,6 +95,6 @@ for site_id in site_ids:
     # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
     #response = ssl_supressed_session().put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
     
-    response = requests..put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
+    response = requests.put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
 
     print(f"Site ID {site_id} response status code: {response.status_code}")
