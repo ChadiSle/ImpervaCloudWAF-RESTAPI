@@ -93,7 +93,10 @@ if Action_Input == "Add" and Policy_Input == "ACL1":
 
         api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_1}")
 
-        response = ssl_supressed_session().post(api_url, headers=headers)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         print(f"Site ID {site_id} response status code {response.status_code}")
 
@@ -109,7 +112,10 @@ if Action_Input == "Add" and Policy_Input == "ACL2":
 
         api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_2}")
 
-        response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         print(f"Site ID {site_id} response status code {response.status_code}")
 
@@ -125,7 +131,10 @@ if Action_Input == "Remove" and Policy_Input == "ACL1":
 
         api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_1}")
 
-        response = ssl_supressed_session().delete(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         print(f"Site ID {site_id} response status code {response.status_code}")
 
@@ -142,7 +151,10 @@ if Action_Input == "Remove" and Policy_Input == "ACL2":
 
         api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_2}")
 
-        response = ssl_supressed_session().delete(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         print(f"Site ID {site_id} response status code {response.status_code}")
 
@@ -157,7 +169,10 @@ if Action_Input == "Add" and Policy_Input == "ACL3":
 
         api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_3}")
 
-        response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         print(f"Site ID {site_id} response status code {response.status_code}")
 
@@ -173,7 +188,10 @@ if Action_Input == "Remove" and Policy_Input == "ACL3":
 
         api_url = (f"https://api.imperva.com/policies/v2/assets/WEBSITE/{site_id}/policies/{ACL_ID_3}")
 
-        response = ssl_supressed_session().delete(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         print(f"Site ID {site_id} response status code {response.status_code}")
 
