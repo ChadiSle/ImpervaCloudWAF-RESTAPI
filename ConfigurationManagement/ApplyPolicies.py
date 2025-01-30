@@ -2,7 +2,9 @@ import requests
 
 #This script can be adjusted for any number of policies and will work for applying/removing said policy from any number of sites at once
 
-#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.from requests import Session
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
+
+from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
 from ssl import create_default_context, Purpose, CERT_NONE
