@@ -306,7 +306,13 @@ for site_id in site_ids:
     api_url = (f"https://my.imperva.com/api/prov/v2/sites/{site_id}/settings/delivery")
 
     # YOU NEED TO REMEMBER WHEN YOUR DATA SHOULD BE JSON, USE JSON.DUMPS() TO CONVERT IT TO JSON
-    response = ssl_supressed_session().put(api_url, headers=headers, data=json.dumps(data), verify=False)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
+	
+    #response = ssl_supressed_session().put(api_url, headers=headers, data=json.dumps(data), verify=False)
+    	
 
     print(f"Site ID {site_id} response status code {response.status_code}")
 
