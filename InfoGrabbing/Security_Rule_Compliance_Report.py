@@ -75,7 +75,10 @@ for site_id in site_ids:
     
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}&tests=domain_validation")
 
-    response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
 
     print(response.status_code)
     response_content = response.content
@@ -87,7 +90,7 @@ for site_id in site_ids:
     
     if response.status_code == 200:
 
-        # Adjust the value for "name" to reflect the rule you want to verify the presence of
+        # Adjust the value for "name" to reflect the rule you want to verify the presence of, ensure their are no typos
         
         pattern = r'"id":(\d+),"name":"DDoS Proactive Threshold Warning"'
     
