@@ -77,7 +77,10 @@ for site_id in site_ids:
     
     api_url = (f"https://my.imperva.com/api/prov/v2/sites/{site_id}/hsmCertificate/connectivityTest")
 
-    response = ssl_supressed_session().get(api_url, headers=headers)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().get(api_url, headers=headers, verify=False)
+    
+    response = requests.get(api_url, headers=headers, verify=False)
 
     print(response.status_code)
    
@@ -93,7 +96,10 @@ for site_id in site_ids:
 
         site_status_url = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}&tests=domain_validation")
 
-        site_status = ssl_supressed_session().post(site_status_url, headers=headers)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #site_status = ssl_supressed_session().post(site_status_url, headers=headers, verify=False)
+    
+        site_status = requests.post(site_status_url, headers=headers, verify=False)
 
         print(site_status.content)
 
@@ -116,7 +122,10 @@ for site_id in site_ids:
 
         site_status_url = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}&tests=domain_validation")
 
-        site_status = ssl_supressed_session().post(site_status_url, headers=headers)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #site_status = ssl_supressed_session().post(site_status_url, headers=headers, verify=False)
+    
+        site_status = requests.post(site_status_url, headers=headers, verify=False))
 
         if site_status.status_code == 200:
 
