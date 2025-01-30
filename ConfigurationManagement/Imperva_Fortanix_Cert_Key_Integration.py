@@ -1,6 +1,8 @@
 import requests
 import json
+
 #The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
+
 from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
@@ -89,7 +91,10 @@ for site_id in site_ids:
 }
 
     api_endpoint = f"{api_url}/{site_id}/{hsmCertificate}"
+
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
     
-    response = ssl_supressed_session().put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
+    response = requests..put(api_endpoint, headers=headers, data=json.dumps(data), verify=False)
 
     print(f"Site ID {site_id} response status code: {response.status_code}")
