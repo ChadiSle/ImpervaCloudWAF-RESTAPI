@@ -77,7 +77,10 @@ for server_id in server_ids:
     
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/dataCenters/servers/edit?server_id={server_id}&server_address={appgw_cname}&is_enabled=true&is_standby=false")
 
-    response = ssl_supressed_session().post(api_url,headers=headers,verify=False)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
 
     print(f"Server ID {server_id} response status code {response.status_code}")
 
