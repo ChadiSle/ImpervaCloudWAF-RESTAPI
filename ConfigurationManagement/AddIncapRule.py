@@ -29,7 +29,7 @@ def ssl_supressed_session():
     session.mount('https://', CustomHttpAdapter(ctx))
     return session
 
-# Set your API credentials
+# Set your API credentials, this is structured so you can input multiple credentials to pivot when acting on different accounts/subaccounts. You can rename these variables according to your account names as long as you ensure to make the same name change in each snippet below.
 Imperva_Headers_Account1 = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
@@ -126,8 +126,11 @@ site_to_rule_id = []
 for site_id in site_ids:
 
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/incapRules/add?action={rule_action}&site_id={site_id}&name={rule_name}&filter={incap_rule}")
-
-    response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
 
     response_content = response.content
 
@@ -148,7 +151,7 @@ data_frame = pandas.DataFrame(site_to_rule_id)
 excel_file_name = 'SiteToRuleID.xlsx'
 data_frame.to_excel(excel_file_name, index=False)
 
-print("Please check the SiteToRuleID.xlsx file for the Site to Rule ID mapping")
+print("Please check the SiteToRuleID.xlsx file for the Site ID to Rule ID mapping")
 
 
 #https://management.service.imperva.com/my/sites/rules/manage?extSiteId=37519257&id=2191120&caid=782530
