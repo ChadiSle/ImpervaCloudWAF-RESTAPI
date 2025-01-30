@@ -1,8 +1,11 @@
-# Adjust the HTML according to your needs, currently it is a generic error page with a simple message
+# Adjust the HTML according to your needs, currently it is a generic error page with a simple message. follow the error page guidelines in the following documentation to ensure you dont encounter errors https://docs.imperva.com/bundle/cloud-application-security/page/error-pages.htm
 
 import requests
 import json
-#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.from requests import Session
+
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
+
+from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
 from ssl import create_default_context, Purpose, CERT_NONE
