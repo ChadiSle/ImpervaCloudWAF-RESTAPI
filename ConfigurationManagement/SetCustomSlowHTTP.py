@@ -59,6 +59,7 @@ if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1
 elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
     headers = Imperva_Headers_Account2
     
+#The below variables can be decommented and placed as the values for the "interval" and "byteCount" to be prompted for the values after the script has been run
 #Slow_HTTP_Interval = input("What is the Interval you wish to set (in seconds)? :""\n")
 #Slow_HTTP_Bytes = input("What is the Bytes you wish to set (in bytes)? :""\n")
 
@@ -91,7 +92,10 @@ for site_id in site_ids:
    
     api_url = (f"https://my.imperva.com/api/prov/v1/sites/configure")
 
-    response = ssl_supressed_session().post(api_url, headers=headers, params=params)
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+    response = requests.post(api_url, headers=headers, verify=False)
 
     print(response.json())
     print(response.status_code)
