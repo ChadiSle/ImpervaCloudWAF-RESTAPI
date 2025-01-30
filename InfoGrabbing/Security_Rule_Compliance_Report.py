@@ -1,8 +1,8 @@
-#DDoS Proactive Threshold Warning Compliance Report (This script can be adjusted to verify the presence of any Security Rule on a sites configuration
+#DDoS Proactive Threshold Warning Compliance Report (This script can be adjusted to verify the presence of any Security Rule on a sites configuration so long as the naming convention is absolute with no typos or errors
 import requests
 import re
 import pandas
-#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I believe the "Unsafe Legacy Renegotiation Disabled" error is due to a CVE imperva may not be privy too regarding their latest SSL certificates on their API servers. Python has recently removed those unsecure certs from their ssl library. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
+#The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
 from requests import Session
 from requests import adapters
 from urllib3 import poolmanager
