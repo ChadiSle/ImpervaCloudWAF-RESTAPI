@@ -104,8 +104,10 @@ if advanced_config == "Yes" or advanced_config == "yes":
 
         api_url = (f"https://my.imperva.com/api/prov/v1/sites/add?domain={domain}&account_id={account_id}&send_site_setup_emails=True&site_ip={cname_or_IP}&force_ssl=True&log_level=full")
 
-        #Currently the Custom HTTP Adapter is being usede to make this call, to use the requests library instead simply change ssl_suppressed_session().post > requests.post
-        response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         response_content = response.content
 
@@ -142,7 +144,10 @@ elif advanced_config == "No" or advanced_config == "no":
     for domain in domains:
         api_url = (f"https://my.imperva.com/api/prov/v1/sites/add?domain={domain}&account_id={account_id}&send_site_setup_emails=True&force_ssl=True&log_level=full")
 
-        response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+        # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+        #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    
+        response = requests.post(api_url, headers=headers, verify=False)
 
         response_content = response.content
 
