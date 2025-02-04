@@ -81,7 +81,7 @@ for site_id in site_ids:
 
     if response.status_code == 200:
 
-        api_url_2 = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}&tests=domain_validation")
+        api_url_2 = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}")
         
         #response2 = ssl_supressed_session().post(api_url_2, headers=headers, verify=False)
         response2 = requests.post(api_url_2, headers=headers, verify=False)
