@@ -74,7 +74,8 @@ for site_id in site_ids:
     
     api_url = (f"https://my.imperva.com/api/prov/v3/sites/{site_id}/data-centers-configuration")
     
-    response = ssl_supressed_session().get(api_url, headers=headers)
+    #response = ssl_supressed_session().get(api_url, headers=headers)
+    response = requests.get(api_url, headers=headers, verify=False)
 
     print(response.status_code)
 
@@ -82,8 +83,8 @@ for site_id in site_ids:
 
         api_url_2 = (f"https://my.imperva.com/api/prov/v1/sites/status?site_id={site_id}&tests=domain_validation")
         
-        #return to normal requests.post method if using normal requests library with python 3.11 or earlier
-        response2 = ssl_supressed_session().post(api_url_2, headers=headers, verify=False)
+        #response2 = ssl_supressed_session().post(api_url_2, headers=headers, verify=False)
+        response2 = requests.post(api_url_2, headers=headers, verify=False)
 
         if response2.status_code == 200:
 
