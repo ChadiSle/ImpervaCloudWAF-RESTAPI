@@ -91,7 +91,7 @@ matching_site_ids = []
 
 for target_domain in target_domains:
 
-    api_url = (f"https://api.imperva.com/sites-mgmt/v3/sites?names={target_domain}&siteTypes=&caid={accountID}")
+    api_url = (f"https://api.imperva.com/sites-mgmt/v3/sites?names={target_domain}&siteTypes=&caid={account_id}")
 
     response = ssl_supressed_session().get(api_url, headers=headers)
     #response = requests.get(api_url, headers=headers, verify=False)
