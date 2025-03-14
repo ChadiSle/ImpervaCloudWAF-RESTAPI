@@ -1,6 +1,7 @@
 import requests
 import json
-import csv
+import re
+import pandas
 #The below libaries allow for the creation of a custom HTTP Adapter which I have found necessary working from certain environment and versions of python. I suggest trying to run this script normally with the requests library before proceeding to disable ssl with this custom adapter if you get an ssl error.
 from requests import Session
 from requests import adapters
@@ -29,7 +30,7 @@ def ssl_supressed_session():
     return session
 
 # Set your API credentials
-Imperva_Headers_Account1 = {
+headers = {
     "Content-Type": "application/json",
     "Accept-Encoding": "gzip, deflate, br",
     "Connection": "keep-alive",
@@ -37,29 +38,9 @@ Imperva_Headers_Account1 = {
     "x-api-key": ""
     
 }
-
-Imperva_Headers_Account2 = {
-    "Content-Type": "application/json",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "x-api-id": "",
-    "x-api-key": ""
-    
-}
-
-# Adjust the header variable names to reflect the name of the accounts you will most commonly be working on and the credentials you will need for them.
-
-headers = input("Which Imperva Tenant are you working with? :""\n")
-
-# Giving a few variations of common typos will help mitigate errors and breaks when running the script, eg lowercase, missed last letter etc.
-if headers == "Imperva_Headers_Account1" or headers == "imperva_headers_account1":
-    headers = Imperva_Headers_Account1
-
-elif headers == "Imperva_Headers_Account2" or headers == "imperva_headers_account2":
-    headers = Imperva_Headers_Account2
-
 
 site_ids = []
+HTTPS_Redirect_Report=[]
 kill_input = ""
 print("Please provide the site ids you wish to fetch this delivery setting from :" "\n")
 
@@ -68,6 +49,35 @@ while True:
     if line == kill_input:
         break
     site_ids.extend(line.strip().split(","))
+    
+for site_id in site_ids:
+
+    api_url = (f"https://my.imperva.com/api/prov/v1/sites/performance/advanced/get?site_id={site_id}&param=redirect_http_to_https")
+
+    # If using an ssl suppresed session, comment out the requests.post() and uncomment the ssl_supressed_session().post() 
+    #response = ssl_supressed_session().post(api_url, headers=headers, verify=False)
+    response = requests.post(api_url, headers=headers, verify=False)
+
+    response_content=response.content
+    print(response_content)
+    
+    pattern = (rb'"value"\s*:\s*true')
+    match_setting_value = re.search(pattern, response_content)
+
+    if match_setting_value:
+        print(f"Site ID {site_id} response status code {response.status_code}")
+        print(response.content)
+        HTTPS_Redirect_Report.append({"Site ID":site_id,"HTTPS Redirect":"True"})
+        
+    else:
+        print(f"Site ID {site_id} response status code {response.status_code}")
+        print(response.content)
+        HTTPS_Redirect_Report.append({"Site ID":site_id,"HTTPS Redirect":"False"})
+
+data_frame = pandas.DataFrame(HTTPS_Redirect_Report)
+excel_file_name = 'HTTPS_Redirect_Report.xlsx'
+data_frame.to_excel(excel_file_name, index=False)
+print("Please check HTTPS_Redirect_Report.xlsx for results")
     
 for site_id in site_ids:
 
